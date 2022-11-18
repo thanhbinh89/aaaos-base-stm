@@ -7,7 +7,6 @@
 
 #define SYS_LOG_EN
 #define SYS_ASSERT_RESTART 	0
-#define RELEASE
 
 #define ESCAPE          "\033"
 #define RED_COLOR       "[0;31m"
@@ -50,8 +49,8 @@
     } while (0);
 
 
-#define FATAL_LOG_FLASH_ADDRESS	FLASH_SECTOR_ADDR(0)
 #define FATAL_LOG_MAGIC_NUMBER  (0xA1B2C3D4)
+
 typedef struct t_fatalLog {
 	uint32_t magicNumber;
 	char string[16];

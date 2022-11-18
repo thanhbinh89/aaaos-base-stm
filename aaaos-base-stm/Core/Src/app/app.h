@@ -45,6 +45,22 @@ enum {
 };
 
 /*****************************************************************************/
+/*  task AAA_TASK_OTA define
+ */
+/*****************************************************************************/
+/* define timer */
+#define OTA_REBOOT_INTERVAL	(3000)
+/* define signal */
+enum {
+	OTA_INIT,
+	OTA_START,
+	OTA_START_DOWNLOAD,
+	OTA_DOWNLOADING,
+	OTA_DONE_DOWNLOAD,
+	OTA_DONE
+};
+
+/*****************************************************************************/
 /*  task AAA_TASK_UI define
  */
 /*****************************************************************************/
@@ -59,19 +75,18 @@ enum {
 /*  global define variable
  */
 /*****************************************************************************/
-#define APP_MANUFACTURER "AAAOS"
-#define APP_MODEL "BASE-01"
-#define APP_FIRMWARE "AAAOS-BASE"
-#define APP_FW_VERSION "0.0.1"
+#define APP_FW_MODEL "AAAOS"
+#define APP_FW_VERSION "1.0.0"
+#ifdef DEBUG
+#define APP_FW_TITLE APP_FW_MODEL"-DEBUG"
+#else
+#define APP_FW_TITLE APP_FW_MODEL"-PROD"
+#endif
 
 #define SERVER_MQTT_HOST "broker.hivemq.com"
 #define SERVER_MQTT_PORT 1883
 
 #define SAMPLE_CT_SENSOR			            	(2500)
-
-#define APP_FLASH_MAGIC_NUMBER  		(0xB1B2E3E4)
-#define APP_SETTING_FLASH_ADDRESS		FLASH_SECTOR_ADDR(1)
-#define PERSISTANCE_FLAGS_FLASH_ADDRESS	FLASH_SECTOR_ADDR(2)
 
 typedef struct tAppSetting {
 	uint32_t magicNumber;
@@ -80,6 +95,26 @@ typedef struct tAppSetting {
 	ip_addr_t subnetMask;
 	ip_addr_t gateway;
 } AppSetting_t;
+
+typedef struct tFOTAAssign {
+	char title[32];
+	char version[32];
+	uint32_t size;
+	char MD5Checksum[32];
+	char url[256];
+} FOTAAssign_t;
+
+enum {
+	OTA_INITIATED, OTA_EXFLASH_AVAILABLE, OTA_COPY_DONE,
+};
+
+typedef struct tOtaFwHeader {
+	uint32_t magicNumber;
+	uint32_t binStartAddress;
+	uint32_t binLength;
+	uint8_t checksum8;
+	uint8_t otaState;
+} __attribute__((__packed__)) OtaFwHeader_t;
 
 extern AppSetting_t gAppSetting;
 extern char gMacAddrStr[13];

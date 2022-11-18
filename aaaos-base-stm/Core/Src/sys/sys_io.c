@@ -341,17 +341,28 @@ void shiftLedOutput() {
 static bool inputStorage[16] =
 	{ false, false, false, false, false, false, false, false,
 	false, false, false, false, false, false, false, false };
-void shiftInput() {
+static bool inputICIsConnected() {
+	bool firstStt = inputStorage[0];
+	// Search any value difference with first value
+	for (int i = 1; i < sizeof(inputStorage) / sizeof(inputStorage[0]); i++) {
+		if (inputStorage[i] != firstStt) {
+			return true;
+		}
+	}
+	return false;
+}
+bool shiftInput() {
 	HAL_GPIO_WritePin(SH_LD_GPIO_Port, SH_LD_Pin, GPIO_PIN_RESET);
-	delayBlockingUs(1);
+	delayBlockingUs(2);
 	HAL_GPIO_WritePin(SH_LD_GPIO_Port, SH_LD_Pin, GPIO_PIN_SET);
 	for (int i = 0; i < sizeof(inputStorage) / sizeof(inputStorage[0]); i++) {
 		HAL_GPIO_WritePin(CLK_GPIO_Port, CLK_Pin, GPIO_PIN_RESET);
-		delayBlockingUs(1);
+		delayBlockingUs(2);
 		inputStorage[i] = HAL_GPIO_ReadPin(SER_OUT_GPIO_Port, SER_OUT_Pin) == GPIO_PIN_SET;
 		HAL_GPIO_WritePin(CLK_GPIO_Port, CLK_Pin, GPIO_PIN_SET);
-		delayBlockingUs(1);
+		delayBlockingUs(2);
 	}
+	return inputICIsConnected();
 }
 
 bool getInput(uint8_t idx) {

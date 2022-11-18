@@ -8,7 +8,7 @@
 #include "sys_log.h"
 #include "sys_io.h"
 
-
+#define APP_SETTING_MAGIC_NUMBER (0xB1B2E3E4)
 #define MAC_FORMAT "%02x%02x%02x%02x%02x%02x"
 #define MAC_SPLIT(m) m[0], m[1], m[2], m[3], m[4], m[5]
 
@@ -21,9 +21,10 @@ char gMacAddrStr[13] =
 
 static void appSettingInit() {
 	flash_read(APP_SETTING_FLASH_ADDRESS, (uint8_t*) &gAppSetting, sizeof(gAppSetting));
-	if (gAppSetting.magicNumber != APP_FLASH_MAGIC_NUMBER) {
+	if (gAppSetting.magicNumber != APP_SETTING_MAGIC_NUMBER) {
+		APP_LOGW(TAG, "App setting invalid");
 		memset(&gAppSetting, 0, sizeof(gAppSetting));
-		gAppSetting.magicNumber = APP_FLASH_MAGIC_NUMBER;
+		gAppSetting.magicNumber = APP_SETTING_MAGIC_NUMBER;
 		gAppSetting.useStaticIP = false;
 		flash_erase_sector(APP_SETTING_FLASH_ADDRESS);
 		flash_write(APP_SETTING_FLASH_ADDRESS, (uint8_t*) &gAppSetting, sizeof(gAppSetting));
@@ -31,6 +32,13 @@ static void appSettingInit() {
 }
 
 void AAATaskInit() {
+	SYS_LOGI(TAG, "App version: " APP_FW_VERSION);
+#ifdef DEBUG
+	SYS_LOGW(TAG, "Build type: DEBUG");
+#else
+	SYS_LOGI(TAG, "Build type: RELEASE");
+#endif
+
 	uint8_t macAddr[6];
 	uint32_t UIDw0 = HAL_GetUIDw0();
 	uint32_t UIDw1 = HAL_GetUIDw1();

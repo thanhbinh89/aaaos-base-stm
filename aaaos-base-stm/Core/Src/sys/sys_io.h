@@ -59,6 +59,12 @@ CT3			120.5						Giá trị dòng tải 3
 CT4			120.5						Giá trị dòng tải 4
 */
 
+#define FATAL_LOG_FLASH_ADDRESS			FLASH_SECTOR_ADDR(255)
+#define APP_SETTING_FLASH_ADDRESS		FLASH_SECTOR_ADDR(254)
+#define PERSISTANCE_FLAGS_FLASH_ADDRESS	FLASH_SECTOR_ADDR(253)
+#define OTA_BINARY_FLASH_HEADER_ADDRESS	FLASH_SECTOR_ADDR(0)
+#define OTA_BINARY_FLASH_START_ADDRESS	FLASH_SECTOR_ADDR(1)
+
 #define millis()		HAL_GetTick()
 
 enum eLedIdx {
@@ -170,7 +176,7 @@ extern void setLedOutput(uint8_t idx, bool on);
 extern bool getLedOutput(uint8_t idx);
 extern void toggleLedOutput(uint8_t idx);
 extern void shiftLedOutput();
-extern void shiftInput();
+extern bool shiftInput();
 extern bool getInput(uint8_t idx);
 extern void setFlashSpiCS(bool on);
 extern uint8_t tranferFlashSpi(uint8_t send);

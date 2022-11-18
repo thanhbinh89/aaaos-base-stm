@@ -20,10 +20,11 @@ static fatalLog_t fatalLog;
 
 void fatalInit() {
 	const char *reason = getRstReason(true);
-	SYS_LOGI(TAG, "Reset Reason: %s", reason);
+	SYS_LOGI(TAG, "Reset reason: %s", reason);
 
 	flash_read(FATAL_LOG_FLASH_ADDRESS, (uint8_t*) &fatalLog, sizeof(fatalLog));
 	if (fatalLog.magicNumber != FATAL_LOG_MAGIC_NUMBER) {
+		SYS_LOGW(TAG, "Reinit fatal log: %s", reason);
 		memset(&fatalLog, 0, sizeof(fatalLog));
 		fatalLog.magicNumber = FATAL_LOG_MAGIC_NUMBER;
 	}
@@ -47,14 +48,14 @@ void fatal(const char *s) {
 	flash_erase_sector(FATAL_LOG_FLASH_ADDRESS);
 	flash_write(FATAL_LOG_FLASH_ADDRESS, (uint8_t*) &fatalLog, sizeof(fatalLog));
 
-#ifdef RELEASE
-	delayBlocking(2000);
-	sysReset();
-#else
+#ifdef DEBUG
 	while (1) {
 		blinkLedLife(200);
 		HAL_IWDG_Refresh(&hiwdg);
 	}
+#else
+	delayBlocking(2000);
+	sysReset();
 #endif
 }
 

@@ -6,6 +6,7 @@
 
 #include "task_device.h"
 #include "task_cloud.h"
+#include "task_ota.h"
 #include "task_ui.h"
 
 enum eAAATaskID
@@ -14,6 +15,7 @@ enum eAAATaskID
 	AAA_TASK_CONSOLE_ID,
 	AAA_TASK_DEVICE_ID,
 	AAA_TASK_CLOUD_ID,
+	AAA_TASK_OTA_ID,
 	AAA_TASK_UI_ID,
 	/* EOT task ID */
 	AAA_TASK_LIST_LEN,

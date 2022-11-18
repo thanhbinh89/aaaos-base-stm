@@ -25,20 +25,21 @@ button_t upBtn, leftBtn, rightBtn, downBtn, setBtn;
 button_t rl1Btn, rl2Btn, rl3Btn, rl4Btn;
 
 static void timerCallback(TimerHandle_t timHandler) {
-	shiftInput();
-	button_timer_polling(&offBtn);
-	button_timer_polling(&manBtn);
-	button_timer_polling(&alrmBtn);
-	button_timer_polling(&autoBtn);
-	button_timer_polling(&upBtn);
-	button_timer_polling(&leftBtn);
-	button_timer_polling(&rightBtn);
-	button_timer_polling(&downBtn);
-	button_timer_polling(&setBtn);
-	button_timer_polling(&rl1Btn);
-	button_timer_polling(&rl2Btn);
-	button_timer_polling(&rl3Btn);
-	button_timer_polling(&rl4Btn);
+	if (shiftInput()) {
+		button_timer_polling(&offBtn);
+		button_timer_polling(&manBtn);
+		button_timer_polling(&alrmBtn);
+		button_timer_polling(&autoBtn);
+		button_timer_polling(&upBtn);
+		button_timer_polling(&leftBtn);
+		button_timer_polling(&rightBtn);
+		button_timer_polling(&downBtn);
+		button_timer_polling(&setBtn);
+		button_timer_polling(&rl1Btn);
+		button_timer_polling(&rl2Btn);
+		button_timer_polling(&rl3Btn);
+		button_timer_polling(&rl4Btn);
+	}
 }
 
 static uint8_t readInputU8(uint8_t i) {

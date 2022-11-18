@@ -51,7 +51,7 @@ void TaskDeviceEntry(void *params) {
 	while (AAATaskRecvMsg(id, &sig, &msg, &len)) {
 		switch (sig) {
 		case DEVICE_SHOW_LED_STATUS: {
-			APP_LOGI(TAG, "DEVICE_SHOW_LED_STATUS");
+			//APP_LOGI(TAG, "DEVICE_SHOW_LED_STATUS");
 			HAL_IWDG_Refresh(&hiwdg);
 			toggleLedLife();
 		}

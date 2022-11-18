@@ -33,5 +33,6 @@
 
 **/build*
 **/Debug/*
+**/Release/*
 **/.vscode/*
 .metadata/*

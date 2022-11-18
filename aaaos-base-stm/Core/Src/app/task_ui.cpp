@@ -30,7 +30,7 @@ void TaskUiEntry(void *params) {
 	while (AAATaskRecvMsg(id, &sig, &msg, &len)) {
 		switch (sig) {
 		case UI_UPDATE: {
-			APP_LOGI(TAG, "UI_UPDATE");
+			//APP_LOGI(TAG, "UI_UPDATE");
 			char *ips;
 			const char *conns;
 			char times[24];
@@ -57,7 +57,7 @@ void TaskUiEntry(void *params) {
 				view_render->setDefaultForegroundColor();
 				view_render->setFont(u8g_font_5x8);
 
-				view_render->drawStr(0, 7, "ATM-MON-GW " APP_FW_VERSION);
+				view_render->drawStr(0, 7, APP_FW_MODEL " " APP_FW_VERSION);
 				view_render->drawLine(0, 10, DISPLAY_WIDTH, 10);
 
 				view_render->drawStr(0, 22, times);

@@ -28,14 +28,15 @@
 #include <string.h>
 
 /* USER CODE BEGIN 0 */
-
+#include "main.h"
+#define ETHERNET_LINK_THREAD_STACK_SIZE ( 1024 )
 /* USER CODE END 0 */
 /* Private function prototypes -----------------------------------------------*/
 /* ETH Variables initialization ----------------------------------------------*/
 void Error_Handler(void);
 
 /* USER CODE BEGIN 1 */
-
+osThreadAttr_t attributes;
 /* USER CODE END 1 */
 
 /* Variables Initialization */
@@ -82,7 +83,11 @@ void MX_LWIP_Init(void)
   dhcp_start(&gnetif);
 
 /* USER CODE BEGIN 3 */
-
+	memset(&attributes, 0x0, sizeof(osThreadAttr_t));
+	attributes.name = "EthCheck";
+	attributes.stack_size = ETHERNET_LINK_THREAD_STACK_SIZE;
+	attributes.priority = osPriorityBelowNormal;
+	osThreadNew(ethernet_link_thread, &gnetif, &attributes);
 /* USER CODE END 3 */
 }
 

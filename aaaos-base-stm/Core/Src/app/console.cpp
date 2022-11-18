@@ -114,10 +114,14 @@ int32_t console_reset(uint8_t *argv) {
 
 int32_t console_ver(uint8_t *argv) {
 	(void) argv;
-	SYS_PRINTF("-Manufacturer:     %s\n", APP_MANUFACTURER);
-	SYS_PRINTF("-Model:            %s\n", APP_MODEL);
-	SYS_PRINTF("-Firmware:         %s\n", APP_FIRMWARE);
+	SYS_PRINTF("-Firmware model:   %s\n", APP_FW_MODEL);
+	SYS_PRINTF("-Firmware title    %s\n", APP_FW_TITLE);
 	SYS_PRINTF("-Firmware version: %s\n", APP_FW_VERSION);
+#ifdef DEBUG
+	SYS_PRINTF("-Build type:       DEBUG\n");
+#else
+	SYS_PRINTF("-Build type:       PROD\n");
+#endif
 	SYS_PRINTF("-Uptime:           %lu\n", HAL_GetTick());
 	SYS_PRINTF("-Heap free:        %u\n", xPortGetFreeHeapSize());
 	return 0;
@@ -181,6 +185,13 @@ int32_t console_fatal(uint8_t *argv) {
 int32_t console_dbg(uint8_t *argv) {
 	(void) argv;
 	switch (*(argv + 4)) {
+	case '1': {
+		FOTAAssign_t FOTAAssign;
+		bzero(&FOTAAssign, sizeof(FOTAAssign));
+		strcpy(FOTAAssign.url, "https://espitek.s3.ap-southeast-1.amazonaws.com/thingsboard/gateway-stm32f4-prod-0.0.2.bin");
+		AAATaskPostMsg(AAA_TASK_OTA_ID, OTA_START, &FOTAAssign, sizeof(FOTAAssign));
+	}
+		break;
 	case '2':
 		AAATaskPostMsg(AAA_TASK_CONSOLE_ID, CONSOLE_READ_NTC, NULL, 0);
 		break;
@@ -196,10 +207,10 @@ int32_t console_dbg(uint8_t *argv) {
 		uint8_t stt = flash_is_connected();
 		SYS_PRINTF("flash_is_connected(): %s\n", stt == FLASH_DRIVER_OK ? "true" : "false");
 		flash_read(0x0, (uint8_t*) &rword, 4);
-		SYS_PRINTF("rword: x%08x\n", rword);
+		SYS_PRINTF("rword: x%lx\n", rword);
 		flash_erase_sector(0x0);
 		flash_write(0x0, (uint8_t*) &wword, 4);
-		SYS_PRINTF("wword: x%08x\n", wword);
+		SYS_PRINTF("wword: x%lx\n", wword);
 	}
 		break;
 
@@ -260,7 +271,7 @@ int32_t console_net(uint8_t *argv) {
 		else {
 			SYS_PRINTF("Internet is disconnected\n");
 			SYS_PRINTF("netif link: %s\n", netif_is_link_up(&gnetif) ? "up" : "down");
-			SYS_PRINTF("netif: %d\n", netif_is_up(&gnetif) ? "up" : "down");
+			SYS_PRINTF("netif: %s\n", netif_is_up(&gnetif) ? "up" : "down");
 		}
 		break;
 

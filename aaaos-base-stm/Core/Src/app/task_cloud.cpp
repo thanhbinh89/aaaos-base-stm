@@ -65,7 +65,6 @@ void TaskCloudEntry(void *params) {
 	Mqtt.initialize((const char*) gMacAddrStr, (const char*) gMacAddrStr);
 
 	AAATimerSet(AAA_TASK_CLOUD_ID, CLOUD_CHECK_INTERNET_CONNECTED, NULL, 0, CLOUD_CHECK_INTERNET_CONNECTED_INTERVAL, true);
-	;
 
 	void *msg = NULL;
 	uint32_t len = 0, sig = 0;
@@ -128,6 +127,14 @@ void TaskCloudEntry(void *params) {
 				sendItem.dataLen = len;
 				sendItem.inHeap = false;
 				Mqtt.sendEnqueue(&sendItem);
+
+				sendItem.topic = (char*) "aaaos/topic/ver";
+				sendItem.topicLen = strlen(sendItem.topic);
+				sendItem.data = (char*) "{\"currentFwTitle\":\"" APP_FW_TITLE "\",\"currentFwVersion\":\"" APP_FW_VERSION "\"}";
+				sendItem.dataLen = strlen(sendItem.data);
+				sendItem.inHeap = false;
+				Mqtt.sendEnqueue(&sendItem);
+
 				AAATaskPostMsg(AAA_TASK_CLOUD_ID, CLOUD_MQTT_SEND_QUEUE, NULL, 0);
 			}
 
